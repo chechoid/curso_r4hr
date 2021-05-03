@@ -42,9 +42,9 @@ Muchas gracias!
 
 **Data 4HR**
 
-# Conceptos de R
+## Conceptos de R
 
-## Objetos
+### Objetos
 
 R es un lenguaje orientado a objetos. Esto quiere decir que las tablas, valores y resultados, les podemos dar un nombre, y utilizar ese nombre para que sea más fácil operar y programar los scripts.
 
@@ -54,7 +54,7 @@ Algo interesante con los objetos es que podemos utilizarlos y operar con ellos e
 
 Para crear un objeto podemos usar el símbolo `<-` (la *"flechita"*), o bien el signo igual `=` .
 
-### Ejercicio
+#### Ejercicio
 
 Asigna al objeto `anio_nacimiento` tu año de nacimiento. Luego usa el objeto para calcular tu edad, y guardarlo en un objeto llamado `edad` .
 
@@ -82,7 +82,7 @@ edad = anio.actual - anio.nacimiento
 edad
 ```
 
-## Vector
+### Vector
 
 Un vector es un conjunto de datos. Se suele decir que *tienen una sola dimensión* (cuando veamos *data frames* esta última frase va a tener sentido). Se pueden almacenar datos numéricos, o categóricos, en incluso una combinación de ambos.
 
@@ -90,7 +90,7 @@ Para crear un vector y guardarlo en un objeto, necesitamos la función `c()` que
 
 Si creas vectores que contengan variables de tipo texto, cada elemento del vector tiene que tener sí o sí las comillas en cada elemento.
 
-### Ejercicio
+#### Ejercicio
 
 Crea un objeto con los nombres artísticos (sin los apellidos) de los integrantes de [Soda Stereo](https://es.wikipedia.org/wiki/Soda_Stereo).
 
@@ -143,7 +143,7 @@ nombres[2] <- "Charly"
 nombres
 ```
 
-## Dataframes
+### Dataframes
 
 Los dataframes son objetos que contienen **filas** y **columnas**, como si fuera una hoja de cálculo por ejemplo. Se dice que este tipo de objetos suele tener 2 dimensiones, una que corresponde a las filas, y otra que corresponde a las columnas.
 
@@ -268,7 +268,7 @@ Te das cuenta que el paquete está activo porque:
 
 -   En la pestaña **Packages** te va a aparecer con una tilde en el nombre del paquete. ![](images/paquete_activo2-01.png)
 
-### Preguntas
+#### Preguntas
 
 En este primer ejercicio tendrás que corregir el código para activar el paquete `tidyverse`. ¿Cuál es la función que tenés que usar para lograrlo?
 
@@ -309,16 +309,13 @@ quiz(
 ))
 ```
 
-
-
-# Tidyverse
-
+## Tidyverse
 
 ![](images/tidyverse_packages.png){width="438"}
 
 Tidyverse es un conjunto de paquetes, diseñados principalmente para la manipulación y transformación de datos. En este primer curso trabajamos mucho con el paquete `dplyr` que nos permite filtrar datos, unir datos de diversas fuentes, y hacer las transformaciones necesarias para poder realizar nuestros análisis. Para saber más del resto de los paquetes buscá en el [Google Drive](https://drive.google.com/drive/folders/1Qck3z_t6XLRXb2vbN-00931DgdJZ0yse?usp=sharing) del **Club de R para RRHH** o mirá los videos en [Youtube](https://youtube.com/playlist?list=PLZuVytUJrxQlcqu6l-P3ou4vV2mRJU2Ka).
 
-## Funciones o verbos de dplyr
+### Funciones o verbos de dplyr
 
 Tené a mano el [cheatsheet de data-wrangling](https://drive.google.com/file/d/1ViFJRuby7FTDgjWvp9P6hKO3MEHgeH_M/view?usp=sharing) en castellano. Los cheatsheets (machetes, cola, trencito, torpedo, chuleta, copiatín, plage, chanchullo) son ayuda memorias con las principales funciones de un paquete.
 
@@ -338,7 +335,7 @@ Las funciones que vimos en el curso (que no son todas las del paquete) son:
 
 -   **mutate():** Uno de los principales usos de `mutate()` es el de crear una nueva variable (columna) en nuestro dataframe original en base a alguna columna que ya exista. Por ejemplo, si tengo una columna que contenga el sueldo básico mensual de un empleado, podría añadir otra columna que calcule las cargas sociales, o bien el costo anual de cada colaborador/a. Otro uso que se le da es para modificar las características de una variable (lo veremos en un ejercicio).
 
-## El "pipe" %\>%
+### El "pipe" %\>%
 
 Uno de los paquetes de tidyverse, el paquete `dplyr` aporta un símbolo conocido como *"pipe"* `%>%` (*tubo* en inglés). El atajo de teclado es con las teclas *Ctrl +Shift +M* en Windows, o *Cmd + Shift + M* en Mac.
 
@@ -367,7 +364,7 @@ nomina %>%
 
 ```
 
-## Ejercicios
+### Ejercicios
 
 ```{r fuente, echo = FALSE, warning=FALSE, message=FALSE}
 library(openxlsx)
@@ -382,7 +379,7 @@ mensualizados <- plantel %>%
 
 ```
 
-### Unir datos con left_join()
+#### Unir datos con left_join()
 
 Tenemos dos dataframes, uno con información general de los empleados. El dataframe `plantel` contiene 8 variables:
 
@@ -454,7 +451,7 @@ empleados <- left____(_____, _____, by = "ID")
 empleados <- left_join(plantel, salarios, by = "ID")
 ```
 
-### select()
+#### select()
 
 Con la función `select()` podemos elegir las columnas que nos interesa trabajar. Por ejemplo, prueba de correr la función `str()` con el nuevo dataframe `empleados`.
 
@@ -480,7 +477,7 @@ mensuales <- empleados %>%          # Crea un nuevo dataframe con los datos de e
   select(ID, AREA, PUESTO, SUELDO)  # Selecciona las variables de interés
 ```
 
-### filter()
+#### filter()
 
 La función `filter()` nos permite utilizar las filas que cumplan con las condiciones que necesitamos analizar. Podemos filtrar en base a columnas numéricas (por ejemplo, sueldos menores a cierto valor), o también por variables categóricas, en cuyo caso siempre vamos a necesitar poner la condición entre comillas (por ejemplo `filter(AREA == "RRHH")`.
 
@@ -504,7 +501,6 @@ gt(
     columns = everything()
   )
 ```
-
 
 **Ejercicio**
 
@@ -534,7 +530,6 @@ mensuales %>%
   summarise(sueldo_promedio = mean(SUELDO))
 ```
 
-
 Si necesito filtrar por dos variables puedo usar el operador lógico `&`.
 
 ```{r filter2, exercise = TRUE, exercise.lines=7}
@@ -559,7 +554,6 @@ mensuales %>%
 
 ```
 
-
 ¿Qué operador lógico necesitamos para filtrar por ejemplo los empleados de `RRHH` y los de `FINANZAS`?
 
 ```{r filter3, exercise = TRUE, exercise.lines=7}
@@ -583,7 +577,6 @@ mensuales %>%
   summarise(sueldo_promedio = mean(SUELDO))
 ```
 
-
 En los casos que sea necesario filtrar por varias condiciones de la misma variable lo ideal es usar un *vector de selección*. Prueba de correr el siguiente código.
 
 ```{r filter4, exercise = TRUE, exercise.lines=7}
@@ -593,3 +586,113 @@ mensuales %>%
   summarise(sueldo_promedio = mean(SUELDO))
 ```
 
+Existe una función muy útil para filtrar una variable dentro de un rango de valores numéricos. Esta función se llama `between()` y tiene 3 argumentos:
+* El nombre de la variable que queremos filtrar.
+* El valor mínimo que queremos usar de filtro.
+* El valor máximo.
+
+En este ejercicio calcula los sueldos promedio, agrupado por puesto, que estén dentro de un rango de `$ 20.000` y `$ 60.000`.
+
+```{r filter5, exercise = TRUE, exercise.lines = 10}
+mensuales %>% 
+  filter(between(
+    ____________, # nombre de la variable a filtrar
+    ____________, # Valor mínimo del filtro
+    ____________, # valor máximo del filtro
+  )) %>% 
+  group_by(PUESTO) %>% 
+  summarise(sueldo_promedio = mean(SUELDO))
+```
+
+```{r filter5-hint}
+# Dentro de la función between, primero tenemos que indicar cuál es la variable que queremos filtrar
+# Luego tenemos que pasar los valores mínimos y máximos del filtro.
+# Cuidado con las comas "," entre cada uno de los argumentos de la función.
+```
+
+```{r filter5-solution}
+mensuales %>% 
+  filter(between(
+    SUELDO,
+    20000,
+    60000
+  )) %>% 
+  group_by(PUESTO) %>% 
+  summarise(sueldo_promedio = mean(SUELDO))
+```
+
+
+#### group_by() y summarise()
+
+En ejercicios previos veíamos estas dos funciones juntas y ahora vamos a explicar para qué sirven. Son dos funciones que por lo general las usaremos en conjunto en los proyectos.
+
+Lo que hacemos con estas funciones es análogo a lo que haríamos con una tabla dinámica en Excel por ejemplo.
+
+Cuando por ejemplo, nos piden calcular el sueldo promedio por puesto, crearíamos la tabla dinámica, y arrastraríamos la columna puesto como agrupador, y luego la columna de sueldo a las celdas correspondientes para calcular el promedio. En R hacemos lo mismo.
+
+Con `group_by()` lo que hacemos es unificar todas las filas por cada uno uno de los valores que contiene la variable. Por ejemplo, el *dataframe* `mensuales` tiene 30 Analistas, y `group_by()` los agrupa en una sola fila.
+
+Por otra parte, `summarise()` agrega una nueva columna, que tendrá el cálculo, o medidad de resumen estadístico, que estamos haciendo sobre la variable agrupada.
+
+Como decíamos antes, si quiero calcular el sueldo promedio por puesto, entonces la variable que agrupa es *"Puesto"*, y sobre la variable *"Sueldo"* usaríamos la función `summarise()`. Si quisiera calcular el ausentismo promedio por área, agruparíamos por *"Área"* y luego usaríamos la función `summarise()` para calcular el promedio sobre el ausentismo.
+
+Cabe señalar que se pueden calcular más cosas que el promedio, pero es la función que más se usa en la práctica.
+
+En el último ejemplo que vimos de la sección anterior habíamos calculado el sueldo promedio, *agrupado* por puesto.
+
+```{r group1, exercise = TRUE, exercise.lines = 6}
+mensuales %>% 
+  filter(AREA %in% c("PRODUCCION", "CALIDAD", "DESARROLLO")) %>% 
+  group_by(PUESTO) %>% 
+  summarise(sueldo_promedio = mean(SUELDO))
+```
+
+
+Se puede agrupar por más de una variable. En el siguiente ejercicio, calcula el sueldo promedio por `AREA` y `PUESTO` para los sectores `CALIDAD` y `DESARROLLO`.
+
+```{r group2, exercise = TRUE, exercise.lines = 6}
+mensuales %>% 
+  filter(AREA %in% c("CALIDAD", "DESARROLLO")) %>% 
+  group_by(_____, ________) %>% 
+  summarise(sueldo_promedio = mean(SUELDO))
+```
+
+```{r group2-hint}
+# Coloca los nombres de las áreas de las cuales nos interesa calcular el sueldo promedio
+# Primero pon el agrupador más general, y luego el más particular.
+```
+
+```{r group2-solution}
+mensuales %>% 
+  filter(AREA %in% c("CALIDAD", "DESARROLLO")) %>% 
+  group_by(AREA, PUESTO) %>% 
+  summarise(sueldo_promedio = mean(SUELDO))
+```
+
+En la explicación decíamos que podíamos usar más cálculos además del promedio. Así que junto con el promedio, esta vez calculemos también el desvío estándar de todas las posiciones con la función `sd()` de todos los sueldos, agrupados por `PUESTO`.
+
+```{r group3, exercise = TRUE, exercise.lines = 6}
+__________ %>% 
+  _________(PUESTO) %>% 
+  _________(sueldo_promedio = ________,
+            sueldo_desvio   = __(SUELDO))
+```
+
+```{r group3-hint}
+# Escribe el nombre del dataframe.
+# Usa la función group_by para agrupar por puesto.
+# Utiliza las funciones summarise y mean(PUESTO) para calcular el promedio de SUELDO
+# La función sd() es la que permite calcular el desvío estándar.
+```
+
+```{r group3-solution}
+mensuales %>% 
+  group_by(PUESTO) %>% 
+  summarise(sueldo_promedio = mean(SUELDO),
+            sueldo_desvio   = sd(SUELDO))
+```
+
+
+#### mutate()
+
+La función `mutate()`
