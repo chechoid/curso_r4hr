@@ -460,11 +460,11 @@ Con la función `select()` podemos elegir las columnas que nos interesa trabajar
 str(empleados)
 ```
 
-Las variables `ANTIGUEDAD`, `EDAD`, `ESTADO_CIVIL` e `HIJOS` no tienen mucho sentido para un análisis salarial. En el próximo ejercicio, selecciona las columnas `ID`, `AREA`, `PUESTO`, `SUELDO` y guarda la selección en un objeto llamado `mensuales.`
+Las variables `EDAD`, `ESTADO_CIVIL` e `HIJOS` no tienen mucho sentido para un análisis salarial. En el próximo ejercicio, selecciona las columnas `ID`,`ANTIGUEDAD`, `AREA`, `PUESTO`, `SUELDO` y guarda la selección en un objeto llamado `mensuales.`
 
 ```{r select, exercise = TRUE, exercise.lines = 5}
 mensuales <- empleados %>% 
-  _______(___, ___, ____, ____)
+  _______(___, ___, ____, ____, ____)
 ```
 
 ```{r select-hint}
@@ -474,7 +474,7 @@ mensuales <- empleados %>%
 
 ```{r select-solution}
 mensuales <- empleados %>%          # Crea un nuevo dataframe con los datos de empleados
-  select(ID, AREA, PUESTO, SUELDO)  # Selecciona las variables de interés
+  select(ID, ANTIGUEDAD, AREA, PUESTO, SUELDO)  # Selecciona las variables de interés
 ```
 
 #### filter()
@@ -586,10 +586,7 @@ mensuales %>%
   summarise(sueldo_promedio = mean(SUELDO))
 ```
 
-Existe una función muy útil para filtrar una variable dentro de un rango de valores numéricos. Esta función se llama `between()` y tiene 3 argumentos:
-* El nombre de la variable que queremos filtrar.
-* El valor mínimo que queremos usar de filtro.
-* El valor máximo.
+Existe una función muy útil para filtrar una variable dentro de un rango de valores numéricos. Esta función se llama `between()` y tiene 3 argumentos: \* El nombre de la variable que queremos filtrar. \* El valor mínimo que queremos usar de filtro. \* El valor máximo.
 
 En este ejercicio calcula los sueldos promedio, agrupado por puesto, que estén dentro de un rango de `$ 20.000` y `$ 60.000`.
 
@@ -621,7 +618,6 @@ mensuales %>%
   summarise(sueldo_promedio = mean(SUELDO))
 ```
 
-
 #### group_by() y summarise()
 
 En ejercicios previos veíamos estas dos funciones juntas y ahora vamos a explicar para qué sirven. Son dos funciones que por lo general las usaremos en conjunto en los proyectos.
@@ -646,7 +642,6 @@ mensuales %>%
   group_by(PUESTO) %>% 
   summarise(sueldo_promedio = mean(SUELDO))
 ```
-
 
 Se puede agrupar por más de una variable. En el siguiente ejercicio, calcula el sueldo promedio por `AREA` y `PUESTO` para los sectores `CALIDAD` y `DESARROLLO`.
 
@@ -692,7 +687,193 @@ mensuales %>%
             sueldo_desvio   = sd(SUELDO))
 ```
 
-
 #### mutate()
 
-La función `mutate()`
+La función `mutate()` permite añadir una nueva columna al *dataframe* en base a las columnas que ya existen. Un detalle importante es que esta nueva variable que creamos se genera en la memoria de R y no en la fuente de datos original (a menos que le indiquemos a R que lo haga).
+
+Por ejemplo, en la variable `SUELDO` lo que vemos es el valor mensual del sueldo bruto. En el siguiente ejemplo vamos a calcular el costo de las cargas sociales (los impuestos que paga el empleador por los salarios de los trabajadores) multiplicando a la variable `SUELDO` por 0.3, y luego en una nueva columna calculamos el costo total del sueldo.
+
+```{r mutate1, exercise = TRUE, exercise.lines=10}
+# Crear una columna nueva con el valor de las cargas sociales
+mensuales <- mensuales %>% 
+  _______(cargas_sociales = _____ * _______)
+
+# Calcular el costo total del sueldo
+mensuales <- mensuales %>% 
+  _______(costo_total = SUELDO + _______)
+
+head(mensuales)
+```
+
+```{r mutate1-hint1}
+# Escribir la función para crear una nueva variable
+# Multiplicar la variable SUELDO por 0.3 para calcular las cargas sociales
+
+```
+
+```{r mutate1-hint2}
+# Usar la función mutate() para crear la nueva variable 'costo_total'
+# Sumar la variable SUELDO y la variable cargas_sociales del paso anterior
+```
+
+```{r mutate1-solution}
+# Crear una columna nueva con el valor de las cargas sociales
+mensuales <- mensuales %>% 
+  mutate(cargas_sociales = SUELDO * 0.3)
+
+# Calcular el costo total del sueldo
+mensuales <- mensuales %>% 
+  mutate(costo_total = SUELDO + cargas_sociales)
+
+head(mensuales)
+
+```
+
+Otro uso que le podemos dar a `mutate()` es para modificar las características de una variable. Por ejemplo corre el siguiente bloque de código y responde la siguiente pregunta:
+
+```{r mutate2, exercise = TRUE, exercise.lines=4}
+# Analiza el tipo de variable de la columna PUESTO
+# Corre la siguiente línea de código
+class(mensuales$PUESTO)
+```
+
+```{r mutateq}
+quiz(
+  question("¿Qué tipo de variable es la columna PUESTO?",
+  answer("Ordinal (tipo 'factor)", message = "Esta variable debería ser ordinal porque hay una jerarquía entre los puestos, pero actualmente es una variable nominal (tipo character)"),
+  answer("Variable numérica", message = "Respuesta incorrecta, no se puede hacer cálculos aritméticos con esta variable"),
+  answer("Nominal (tipo character)", correct = TRUE, message = "Bien! Actualmente esta es una variable de tipo nominal, no tiene un orden establecido... por ahora..."),
+  submit_button = "Enviar respuesta",
+  try_again_button = "Intenta de nuevo",
+  allow_retry = TRUE
+))
+```
+
+Con `mutate()` podemos sobreescribir una variable y cambiar por ejemplo el tipo de variable y algunas de sus características. En el siguiente ejercicio vamos a cambiar la variable `PUESTO` a una variable de tipo `factor` para poder asignarle un orden a los valores de la variable.
+
+```{r mutate3, exercise=TRUE, exercise.lines=10}
+# Corre este script para ver el gráfico
+mensuales %>% 
+  filter(AREA == "PRODUCCION") %>% 
+  group_by(PUESTO) %>% 
+  summarise(sueldo_promedio = mean(SUELDO)) %>% 
+  ggplot(aes(x = PUESTO, y = sueldo_promedio)) +
+  geom_col() +
+  ggtitle("Sueldo promedio por puesto")
+```
+
+```{r mutate4, exercise=TRUE, exercise.lines=19}
+# Creemos un dataframe para los puestos de produccion
+produccion <- mensuales %>% 
+  filter(_____ == ______)
+
+produccion <- produccion %>%
+  # Coloca el nombre de la variable que queremos modificar
+  mutate(PUESTO = factor(_____, levels = c("ANALISTA", "TEC. MANTENIMIENTO",
+                                           "INGENIERO", "LIDER DE EQUIPO",
+                                           "JEFE", "GERENTE")))
+
+# Grafica el sueldo promedio por puesto
+produccion %>% 
+  group_by(PUESTO) %>% 
+  summarise(sueldo_promedio = mean(SUELDO)) %>% 
+  ggplot(aes(x = PUESTO, y = sueldo_promedio)) +
+  geom_col() +
+  ggtitle("Sueldo promedio por puesto")
+```
+
+```{r mutate4-hint1}
+# Crea un dataframe nuevo llamado 'produccion' filtrando la variable AREA == PRODUCCION
+# La variable que queremos sobrescribir es la columna PUESTO
+```
+
+```{r mutate4-solution}
+# Creemos un dataframe para los puestos de produccion
+produccion <- mensuales %>% 
+  filter(AREA == "PRODUCCION")
+
+produccion <- produccion %>%
+  # Coloca el nombre de la variable que queremos modificar
+  mutate(PUESTO = factor(PUESTO, levels = c("ANALISTA", "TEC. MANTENIMIENTO",
+                                           "INGENIERO", "LIDER DE EQUIPO",
+                                           "JEFE", "GERENTE")))
+
+# Grafica el sueldo promedio por puesto
+produccion %>% 
+  group_by(PUESTO) %>% 
+  summarise(sueldo_promedio = mean(SUELDO)) %>% 
+  ggplot(aes(x = PUESTO, y = sueldo_promedio)) +
+  geom_col() +
+  ggtitle("Sueldo promedio por puesto")
+
+```
+
+¿Cómo generar una variable categórica de una variable numérica? Podemos usar junto con la función `mutate()` la función `case_when()` que permite establecer un nuevo valor en una nueva columna, tomando como base una variable ya existente.
+
+Es **muy importante** que las condiciones de la variable numérica estén ordenadas de menor a mayor para crear la nueva variable.
+
+Crea un dataframe nuevo con los analistas. Luego crea una nueva variable llamada `seniority` que indique: \* *Junior* cuando `ANTIGUEDAD <= 2`. \* *Semi Sr.* cuando `ANTIGUEDAD <= 4`. \* *Senior* cuando `ANTIGUEDAD > 4`.
+
+Grafica el sueldo promedio de los analistas según su seniority:
+
+```{r mutate5, exercise=TRUE, exercise.lines=20}
+# Crea un dataframe sólo con los analistas
+analistas <- mensuales %>% 
+  ______(PUESTO == "ANALISTA")
+
+# Crea una nueva variable llamada seniority en función de los años de antigüedad
+analistas <- analistas %>% 
+  mutate(seniority = case_when(
+    ANTIGUEDAD <= 2 ~ "Junior",
+    __________ ___  ~ "Semi Sr.",
+    ANTIGUEDAD = TRUE ~ "Senior"
+  ))
+
+# Grafica el sueldo promedio por seniority
+analistas %>% 
+  group_by(seniority) %>% 
+  __________(sueldo_promedio = _____(______)) %>% 
+  ggplot(aes(x = seniority, y = sueldo_promedio)) +
+  geom_col() +
+  ggtitle("Sueldo promedio de Analistas por Seniority")
+```
+
+```{r mutate5-hint}
+# Coloca la función correcta para filtrar los analistas
+# Indica la condición para definir los Semi Sr. cuando la ANTIGUEDAD es menor o igual a 4.
+# Completa con las funciones y variables para calcular el promedio de la variable SUELDO
+```
+
+```{r mutate5-solution}
+#  Crea un dataframe sólo con los analistas
+analistas <- mensuales %>% 
+  filter(PUESTO == "ANALISTA")
+
+# Crea una nueva variable llamada seniority en función de los años de antigüedad
+analistas <- analistas %>% 
+  mutate(seniority = case_when(
+    ANTIGUEDAD <= 2 ~ "Junior",
+    ANTIGUEDAD <= 4 ~ "Semi Sr.",
+    ANTIGUEDAD = TRUE ~ "Senior"
+  ))
+
+# Grafica el sueldo promedio por seniority
+analistas %>% 
+  group_by(seniority) %>% 
+  summarise(sueldo_promedio = mean(SUELDO)) %>% 
+  ggplot(aes(x = seniority, y = sueldo_promedio)) +
+  geom_col() +
+  ggtitle("Sueldo promedio de Analistas por Seniority")
+```
+
+`case_when()` lo que hace es recorrer la variable `ANTIGUEDAD` y va creando asignando valores en función de los valores de la variable que está evaluando. Cuando ponemos `ANTIGUEDAD = TRUE` lo que R analiza es: 1. Asigna los valores cuando `ANTIGUEDAD <= 2` 2. Si `ANTIGUEDAD` no es menor o igual a 2, asigna los valores cuando `ANTIGUEDAD <= 4` 3. Con `ANTIGUEDAD = TRUE` indica que `ANTIGUEDAD` no cumple con las condiciones anteriores.
+
+Por esta razón es importante poner las condiciones ordenadas de menor a mayor.
+
+## Cierre
+
+Este es el final del tutorial de la clase 1 del curso **Introducción a R para RRHH** que dictamos en [Data 4HR](https://data-4hr.com/capacitacion/curso-introduccion-r-para-rrhh/). Este tutorial es un complemento de la primera clase donde hacemos la introducción a R, aprendemos a cargar datos, y a limpiar nuestros datasets con el paquete `tidyverse`.
+
+Podés escribirnos a info\@d4hr.com para recibir más información sobre el curso, y también si detectás algún error en este tutorial o querés hacernos alguna sugerencia. También podés revisar el repositorio de este tutorial y proponer mejores en [GitHub](https://github.com/chechoid/curso_r4hr).
+
+Muchas gracias! 🙌
